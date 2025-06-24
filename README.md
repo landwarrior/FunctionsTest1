@@ -30,3 +30,11 @@ VSCode の拡張機能に Azure Functions というまんまな名前のもの�
 7. トリガーの名称を決めるので、 `HttpExample` にする
 8. namespace を決めることにないるので、 `My.Functions` にする
 9. AccessRights というのは承認レベルのことらしい。 `Anonymous` にする
+
+### デプロイ方法
+
+めっちゃ分かりづらいけど以下の手順通り  
+[Visual Studio Code を使用して C# 関数を作成する - Azure Functions | Microsoft Learn](https://learn.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-csharp)
+
+VSCode で Azure にログインして事前に作成しておいた Functions にデプロイした。  
+成功したら、 URL が払い出されるので認証なしでアクセスできる。
