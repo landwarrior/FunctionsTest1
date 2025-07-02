@@ -31,6 +31,16 @@ VSCode の拡張機能に Azure Functions というまんまな名前のもの�
 8. namespace を決めることにないるので、 `My.Functions` にする
 9. AccessRights というのは承認レベルのことらしい。 `Anonymous` にする
 
+あとは実装していく
+
+### パッケージの追加
+
+NuGet パッケージを追加する。以下のコマンドを FunctionsTest1 フォルダに移動してから実行する。
+
+```console
+dotnet add package HtmlAgilityPack
+```
+
 ### デプロイ方法
 
 めっちゃ分かりづらいけど以下の手順通り  
