@@ -38,12 +38,12 @@ public class HttpExample
         _logger.Warn("This is a warning message.");
         _logger.Error("This is an error message.");
 
-        _logger.Error("テストエラー", new Exception("テスト例外"));
+        // _logger.Error("テストエラー", new Exception("テスト例外"));
 
          // クエリパラメータで実行するアクションを指定
         var action = req.Query["action"].ToString().ToLower();
         List<Content> result = new();
-        _logger.LogInformation("Executing action: {Action}", action);
+        _logger.Info($"Executing action: {action}");
         switch (action)
         {
             case "aitnewall":

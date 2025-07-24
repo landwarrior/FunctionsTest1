@@ -27,7 +27,7 @@ namespace FunctionsTest1
             [CallerLineNumber] int lineNumber = 0)
         {
             var fileName = Path.GetFileName(filePath);
-            var cat = !string.IsNullOrEmpty(category) ? $"({category})" : "";
+            var cat = !string.IsNullOrEmpty(category) ? $"({category}) " : "";
             // ログレベルを11文字で左詰めにパディング
             string logLevelStr = $"{logLevel,-11}";
             var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");

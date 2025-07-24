@@ -37,7 +37,7 @@ public class Actions
     public static async Task<List<Content>> AitNewAllAsync()
     {
         var url = "https://rss.itmedia.co.jp/rss/2.0/ait.xml";
-        _logger.LogInformation("GET {Url} header: {Header}", url, Header);
+        _logger.Info($"GET {url} header: {Header}", "AitNewAllAsync");
         var contents = new List<Content>();
 
         try
@@ -71,7 +71,7 @@ public class Actions
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in AitNewAllAsync");
+            _logger.Error("Error in AitNewAllAsync", ex);
         }
 
         return contents;
@@ -83,7 +83,7 @@ public class Actions
     public static async Task<List<Content>> AitRankingAsync()
     {
         var url = "https://www.atmarkit.co.jp/json/ait/rss_rankindex_all_day.json";
-        _logger.LogInformation("GET {Url} header: {Header}", url, Header);
+        _logger.Info($"GET {url} header: {Header}");
         var contents = new List<Content>();
 
         try
@@ -112,7 +112,7 @@ public class Actions
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in AitRankingAsync");
+            _logger.Error("Error in AitRankingAsync", ex);
         }
 
         return contents;
@@ -124,7 +124,7 @@ public class Actions
     public static async Task<List<Content>> ItmediaNewsAsync()
     {
         var url = "https://rss.itmedia.co.jp/rss/2.0/news_bursts.xml";
-        _logger.LogInformation("GET {Url} header: {Header}", url, Header);
+        _logger.Info($"GET {url} header: {Header}");
         var contents = new List<Content>();
 
         try
@@ -154,7 +154,7 @@ public class Actions
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in ItmediaNewsAsync");
+            _logger.Error("Error in ItmediaNewsAsync", ex);
         }
 
         return contents;
@@ -165,11 +165,13 @@ public class Actions
     /// </summary>
     public static async Task<List<Content>> QiitaAsync()
     {
+        var url = "https://qiita.com/api/v2/items?page=1&per_page=3";
+        _logger.Info($"GET {url} header: {Header}");
         var contents = new List<Content>();
 
         try
         {
-            var response = await _httpClient.GetAsync("https://qiita.com/api/v2/items?page=1&per_page=3");
+            var response = await _httpClient.GetAsync(url);
             var jsonStr = await response.Content.ReadAsStringAsync();
 
             using var jsonDoc = System.Text.Json.JsonDocument.Parse(jsonStr);
