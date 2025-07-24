@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
 using System;
 
+namespace FunctionsTest1;
+
 public class CustomLoggerProvider : ILoggerProvider
 {
     public ILogger CreateLogger(string categoryName)
@@ -8,7 +10,9 @@ public class CustomLoggerProvider : ILoggerProvider
         return new CustomLogger(categoryName);
     }
 
-    public void Dispose() { }
+    public void Dispose() {
+        GC.SuppressFinalize(this);
+    }
 }
 
 public class CustomLogger : ILogger

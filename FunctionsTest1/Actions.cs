@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
-using My.Functions.Models;
+using FunctionsTest1.Models;
 using System.Xml;
 using System.Globalization;
 using HtmlAgilityPack;
 
-namespace My.Functions;
+namespace FunctionsTest1;
 
 public class Actions
 {

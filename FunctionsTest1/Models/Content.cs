@@ -1,4 +1,4 @@
-namespace My.Functions.Models;
+namespace FunctionsTest1.Models;
 
     public class Content
     {
