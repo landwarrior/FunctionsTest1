@@ -3,6 +3,14 @@ using System.Runtime.CompilerServices;
 
 namespace FunctionsTest1
 {
+
+    /// <summary>
+    /// ログ出力の拡張メソッドを提供するクラスです。
+    /// ログ出力の際に、呼び出し元のファイル名・メソッド名・行番号を含めて出力することができます。
+    /// このクラスをどこかで using しておくと、ILogger のメソッドを呼び出す際に、呼び出し元のファイル名・メソッド名・行番号を含めてログ出力することができるらしい。
+    /// 明示的に使用するように書いてないけど、不思議～
+    /// なお、 namespace が同じなので using も書いてない。
+    /// </summary>
     public static class LoggerExtensions
     {
         /// <summary>

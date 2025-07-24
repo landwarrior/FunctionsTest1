@@ -1,7 +1,8 @@
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace FunctionsTest1;
+
+// このクラスは現在使用していません
 
 public class CustomLoggerProvider : ILoggerProvider
 {
@@ -10,7 +11,8 @@ public class CustomLoggerProvider : ILoggerProvider
         return new CustomLogger(categoryName);
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
         GC.SuppressFinalize(this);
     }
 }
