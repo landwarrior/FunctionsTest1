@@ -48,3 +48,28 @@ dotnet add package HtmlAgilityPack
 
 VSCode で Azure にログインして事前に作成しておいた Functions にデプロイした。  
 成功したら、 URL が払い出されるので認証なしでアクセスできる。
+
+# DAL プロジェクトを作成しソリューションに追加する
+
+プロジェクトフォルダ直下で以下を実行
+
+```bash
+dotnet new classlib -n FunctionsTest1.DAL -o FunctionsTest1.DAL
+dotnet sln FunctionsTest1.sln add FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
+```
+
+## FunctionsTest1 プロジェクトから FunctionsTest1.DAL プロジェクトを参照できるように設定する
+
+```bash
+dotnet add FunctionsTest1/FunctionsTest1.csproj reference FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
+```
+
+## スキャフォールドを実行して必要なクラスを生成する
+
+```bash
+dotnet tool install --global dotnet-ef
+dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.Design
+dotnet ef dbcontext scaffold "Server=192.168.33.150,1433;Database=TestDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Contexts --context TestDbContext --force
+dotnet ef dbcontext scaffold "Server=192.168.33.150,1433;Database=TestDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Contexts --context TestDbContext --force --project FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
+```

@@ -1,0 +1,15 @@
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\bin\Debug\net8.0\FunctionsTest1.DAL.deps.json
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\bin\Debug\net8.0\FunctionsTest1.DAL.runtimeconfig.json
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\bin\Debug\net8.0\FunctionsTest1.DAL.dll
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\bin\Debug\net8.0\FunctionsTest1.DAL.pdb
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.csproj.AssemblyReference.cache
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.AssemblyInfoInputs.cache
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.AssemblyInfo.cs
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.csproj.CoreCompileInputs.cache
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.sourcelink.json
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.dll
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\refint\FunctionsTest1.DAL.dll
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.pdb
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\FunctionsTest1.DAL.genruntimeconfig.cache
+D:\program_src\GitHub\FunctionsTest1\FunctionsTest1.DAL\obj\Debug\net8.0\ref\FunctionsTest1.DAL.dll

@@ -16,4 +16,7 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.6" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FunctionsTest1.DAL\FunctionsTest1.DAL.csproj" />
+  </ItemGroup>
 </Project>
