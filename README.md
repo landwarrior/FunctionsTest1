@@ -49,27 +49,56 @@ dotnet add package HtmlAgilityPack
 VSCode で Azure にログインして事前に作成しておいた Functions にデプロイした。  
 成功したら、 URL が払い出されるので認証なしでアクセスできる。
 
-# DAL プロジェクトを作成しソリューションに追加する
 
-プロジェクトフォルダ直下で以下を実行
+# DAL プロジェクトの追加と Entity Framework Core のスキャフォールド手順
+
+このプロジェクトでは、SQL Server へのデータアクセス層（DAL）を `FunctionsTest1.DAL` プロジェクトとして分離しています。以下はその構成手順と各コマンドの役割です。
+
+## 1. DAL プロジェクトの作成
+
+プロジェクトフォルダ直下で以下を実行します。
 
 ```bash
 dotnet new classlib -n FunctionsTest1.DAL -o FunctionsTest1.DAL
+```
+→ 新しいクラスライブラリ（DAL）プロジェクトを作成します。
+
+```bash
 dotnet sln FunctionsTest1.sln add FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
 ```
+→ 作成した DAL プロジェクトをソリューションに追加します。
 
-## FunctionsTest1 プロジェクトから FunctionsTest1.DAL プロジェクトを参照できるように設定する
+## 2. プロジェクト参照の追加
 
 ```bash
 dotnet add FunctionsTest1/FunctionsTest1.csproj reference FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
 ```
+→ FunctionsTest1 から FunctionsTest1.DAL を参照できるようにします。
 
-## スキャフォールドを実行して必要なクラスを生成する
+## 3. Entity Framework Core のセットアップとスキャフォールド
+
+### 必要なツール・パッケージのインストール
 
 ```bash
 dotnet tool install --global dotnet-ef
+```
+→ Entity Framework Core のコマンドラインツールをグローバルインストールします。
+
+```bash
 dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.SqlServer
+```
+→ SQL Server 用の EF Core プロバイダーを追加します。
+
+```bash
 dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.Design
-dotnet ef dbcontext scaffold "Server=192.168.33.150,1433;Database=TestDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Contexts --context TestDbContext --force
+```
+→ スキャフォールドやマイグレーションに必要なデザインパッケージを追加します。
+
+### スキャフォールド（DbContext/エンティティ自動生成）
+
+```bash
 dotnet ef dbcontext scaffold "Server=192.168.33.150,1433;Database=TestDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Contexts --context TestDbContext --force --project FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
 ```
+→ 指定した SQL Server からスキーマ情報を取得し、DAL プロジェクト内に `DbContext` とエンティティクラスを自動生成します。
+
+> ※ `--project` オプションを付けることで、DAL プロジェクトを明示的に指定しています。
