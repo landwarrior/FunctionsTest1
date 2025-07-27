@@ -41,9 +41,73 @@ NuGet パッケージを追加する。以下のコマンドを FunctionsTest1 �
 dotnet add package HtmlAgilityPack
 ```
 
+### デプロイ方法
+
+めっちゃ分かりづらいけど以下の手順通り  
+[Visual Studio Code を使用して C# 関数を作成する - Azure Functions | Microsoft Learn](https://learn.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-csharp)
+
+VSCode で Azure にログインして事前に作成しておいた Functions にデプロイした。  
+成功したら、 URL が払い出されるので認証なしでアクセスできる。
+
+
+# DAL プロジェクトの追加と Entity Framework Core のスキャフォールド手順
+
+このプロジェクトでは、SQL Server へのデータアクセス層（DAL）を `FunctionsTest1.DAL` プロジェクトとして分離しています。以下はその構成手順と各コマンドの役割です。
+
+## 1. DAL プロジェクトの作成
+
+プロジェクトフォルダ直下で以下を実行します。
+
+```bash
+dotnet new classlib -n FunctionsTest1.DAL -o FunctionsTest1.DAL
+```
+→ 新しいクラスライブラリ（DAL）プロジェクトを作成します。
+
+```bash
+dotnet sln FunctionsTest1.sln add FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
+```
+→ 作成した DAL プロジェクトをソリューションに追加します。
+
+## 2. プロジェクト参照の追加
+
+```bash
+dotnet add FunctionsTest1/FunctionsTest1.csproj reference FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
+```
+→ FunctionsTest1 から FunctionsTest1.DAL を参照できるようにします。
+
+## 3. Entity Framework Core のセットアップとスキャフォールド
+
+### 必要なツール・パッケージのインストール
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+→ Entity Framework Core のコマンドラインツールをグローバルインストールします。
+
+```bash
+dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.SqlServer
+```
+→ SQL Server 用の EF Core プロバイダーを追加します。
+
+```bash
+dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.Design
+```
+→ スキャフォールドやマイグレーションに必要なデザインパッケージを追加します。
+
+### スキャフォールド（DbContext/エンティティ自動生成）
+
+```bash
+dotnet ef dbcontext scaffold "Server=192.168.33.150,1433;Database=TestDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Contexts --context TestDbContext --force --project FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
+```
+→ 指定した SQL Server からスキーマ情報を取得し、DAL プロジェクト内に `DbContext` とエンティティクラスを自動生成します。
+
+> ※ `--project` オプションを付けることで、DAL プロジェクトを明示的に指定しています。
+
 # Azure REST API を呼び出す HTTP Trigger の追加手順
 
-Azure サービスの REST API を認証付きで呼び出す HTTP Trigger を追加する場合の手順例です。
+Azure サービスの REST API を認証付きで呼び出す HTTP Trigger を追加する場合の手順例です。  
+実行したい REST API は以下です。  
+https://learn.microsoft.com/ja-jp/rest/api/support/services/list?view=rest-support-2024-04-01&tabs=HTTP
 
 ## 1. 新しい HTTP Trigger 関数の追加
 
@@ -110,9 +174,16 @@ dotnet add FunctionsTest1 package Azure.Identity
 
 ## 3. Azure Entra ID（旧 Azure AD）でのアプリ登録
 
-1. Azure ポータルで「Azure Entra ID」→「アプリの登録」→「新規登録」
-2. アプリケーションID（クライアントID）、ディレクトリID（テナントID）、クライアントシークレットを取得
-3. 「API のアクセス許可」で `Azure Service Management` の `user_impersonation` など必要な権限を追加し、管理者の同意を行う
+1. Azure ポータルで「Azure Entra ID」→「追加」→「アプリを登録」
+2. 「FunctionsTest1App」などと名称をつけ登録し、アプリケーションID（クライアントID）、ディレクトリID（テナントID）を取得
+    - サポートされているアカウントの種類は「この組織ディレクトリ内のアカウントのみ」など用途に応じて選択
+    - リダイレクトURIは不要（API利用のみの場合）
+3. 「クライアントの資格情報」からシークレットを「FunctionsTest1Secret」などと名称をつけ登録し、シークレットの値を取得
+    - シークレット値は必ず控えておく（後から確認不可）
+4. APIアクセス権限の追加
+    - 左側メニューの「APIのアクセス許可」→「APIのアクセス許可の追加」
+    - 「Microsoft APIs」→「管理対象のAPI」→「Azure Service Management」→「アプリケーションの許可」→「user_impersonation」など必要な権限を追加
+    - 追加後、「管理者の同意」を行う
 
 ## 4. 環境変数の設定
 
@@ -131,68 +202,40 @@ Azure Functions のローカル実行時は `local.settings.json` に以下の�
 }
 ```
 
+# Azure REST API を curl で実行する手順
+
+Azure Entra ID（旧 Azure AD）でアプリ登録し、トークンを取得した上で curl で API を実行する例です。
+
+## 1. アクセストークンの取得
+
+Windows コマンドプロンプトの場合：
+
+```cmd
+curl -X POST https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token ^
+  -H "Content-Type: application/x-www-form-urlencoded" ^
+  -d "client_id=<CLIENT_ID>" ^
+  -d "scope=https://management.azure.com/.default" ^
+  -d "client_secret=<CLIENT_SECRET>" ^
+  -d "grant_type=client_credentials"
+```
+
+- `<TENANT_ID>`: Azure Entra ID のテナントID
+- `<CLIENT_ID>`: アプリ登録のクライアントID
+- `<CLIENT_SECRET>`: アプリ登録のクライアントシークレット
+
+このコマンドのレスポンスで `access_token` を取得します。
+
+## 2. API の実行
+
+取得したアクセストークンを使って、API を呼び出します。
+
+```cmd
+curl -X GET "https://management.azure.com/providers/Microsoft.Support/services?api-version=2024-04-01" ^
+  -H "Authorization: Bearer <ACCESS_TOKEN>"
+```
+
+- `<ACCESS_TOKEN>`: 1 で取得したトークン
+
+Linux/Mac や PowerShell の場合は `^` を `\` などに置き換えてください。
+
 ---
-
-これにより、Azure REST API を認証付きで呼び出す HTTP Trigger 関数を追加できます。
-
-### デプロイ方法
-
-めっちゃ分かりづらいけど以下の手順通り  
-[Visual Studio Code を使用して C# 関数を作成する - Azure Functions | Microsoft Learn](https://learn.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-csharp)
-
-VSCode で Azure にログインして事前に作成しておいた Functions にデプロイした。  
-成功したら、 URL が払い出されるので認証なしでアクセスできる。
-
-
-# DAL プロジェクトの追加と Entity Framework Core のスキャフォールド手順
-
-このプロジェクトでは、SQL Server へのデータアクセス層（DAL）を `FunctionsTest1.DAL` プロジェクトとして分離しています。以下はその構成手順と各コマンドの役割です。
-
-## 1. DAL プロジェクトの作成
-
-プロジェクトフォルダ直下で以下を実行します。
-
-```bash
-dotnet new classlib -n FunctionsTest1.DAL -o FunctionsTest1.DAL
-```
-→ 新しいクラスライブラリ（DAL）プロジェクトを作成します。
-
-```bash
-dotnet sln FunctionsTest1.sln add FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
-```
-→ 作成した DAL プロジェクトをソリューションに追加します。
-
-## 2. プロジェクト参照の追加
-
-```bash
-dotnet add FunctionsTest1/FunctionsTest1.csproj reference FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
-```
-→ FunctionsTest1 から FunctionsTest1.DAL を参照できるようにします。
-
-## 3. Entity Framework Core のセットアップとスキャフォールド
-
-### 必要なツール・パッケージのインストール
-
-```bash
-dotnet tool install --global dotnet-ef
-```
-→ Entity Framework Core のコマンドラインツールをグローバルインストールします。
-
-```bash
-dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.SqlServer
-```
-→ SQL Server 用の EF Core プロバイダーを追加します。
-
-```bash
-dotnet add FunctionsTest1.DAL package Microsoft.EntityFrameworkCore.Design
-```
-→ スキャフォールドやマイグレーションに必要なデザインパッケージを追加します。
-
-### スキャフォールド（DbContext/エンティティ自動生成）
-
-```bash
-dotnet ef dbcontext scaffold "Server=192.168.33.150,1433;Database=TestDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Contexts --context TestDbContext --force --project FunctionsTest1.DAL/FunctionsTest1.DAL.csproj
-```
-→ 指定した SQL Server からスキーマ情報を取得し、DAL プロジェクト内に `DbContext` とエンティティクラスを自動生成します。
-
-> ※ `--project` オプションを付けることで、DAL プロジェクトを明示的に指定しています。
