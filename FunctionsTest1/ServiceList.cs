@@ -21,7 +21,7 @@ namespace FunctionsTest1
             [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
         {
             var apiUrl = "https://management.azure.com/providers/Microsoft.Support/services?api-version=2024-04-01";
-            _logger.LogInformation($"Calling API: {apiUrl}");
+            _logger.Info($"Calling API: {apiUrl}");
 
             // 環境変数や設定から認証情報を取得
             var tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID");
@@ -39,7 +39,7 @@ namespace FunctionsTest1
             var response = await _httpClient.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
 
-            _logger.LogInformation($"API Response: {content}");
+            _logger.Info($"API Response: {content}");
 
             var res = req.CreateResponse(System.Net.HttpStatusCode.OK);
             await res.WriteStringAsync("API call completed. Check logs for details.");
