@@ -41,6 +41,100 @@ NuGet パッケージを追加する。以下のコマンドを FunctionsTest1 �
 dotnet add package HtmlAgilityPack
 ```
 
+# Azure REST API を呼び出す HTTP Trigger の追加手順
+
+Azure サービスの REST API を認証付きで呼び出す HTTP Trigger を追加する場合の手順例です。
+
+## 1. 新しい HTTP Trigger 関数の追加
+
+`FunctionsTest1` プロジェクトの `FunctionsTest1` フォルダに新しい C# クラス（例: `ServiceList.cs`）を作成し、以下のような雛形で追加します。
+
+```csharp
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Logging;
+using Azure.Core;
+using Azure.Identity;
+
+namespace FunctionsTest1
+{
+    public class ServiceList
+    {
+        private readonly ILogger _logger;
+        private static readonly HttpClient _httpClient = new HttpClient();
+
+        public ServiceList(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<ServiceList>();
+        }
+
+        [Function("ServiceList")]
+        public async Task<HttpResponseData> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        {
+            var apiUrl = "https://management.azure.com/providers/Microsoft.Support/services?api-version=2024-04-01";
+            _logger.LogInformation($"Calling API: {apiUrl}");
+
+            // 環境変数や設定から認証情報を取得
+            var tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID");
+            var clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
+            var clientSecret = Environment.GetEnvironmentVariable("AZURE_CLIENT_SECRET");
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+
+            // Azure Management API 用のスコープ
+            var tokenRequestContext = new TokenRequestContext(new[] { "https://management.azure.com/.default" });
+            var accessToken = await credential.GetTokenAsync(tokenRequestContext);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken.Token);
+
+            var response = await _httpClient.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            _logger.LogInformation($"API Response: {content}");
+
+            var res = req.CreateResponse(System.Net.HttpStatusCode.OK);
+            await res.WriteStringAsync("API call completed. Check logs for details.");
+            return res;
+        }
+    }
+}
+```
+
+## 2. 必要な NuGet パッケージの追加
+
+```bash
+dotnet add FunctionsTest1 package Azure.Identity
+```
+→ Azure REST API 認証用のパッケージを追加します。
+
+## 3. Azure Entra ID（旧 Azure AD）でのアプリ登録
+
+1. Azure ポータルで「Azure Entra ID」→「アプリの登録」→「新規登録」
+2. アプリケーションID（クライアントID）、ディレクトリID（テナントID）、クライアントシークレットを取得
+3. 「API のアクセス許可」で `Azure Service Management` の `user_impersonation` など必要な権限を追加し、管理者の同意を行う
+
+## 4. 環境変数の設定
+
+Azure Functions のローカル実行時は `local.settings.json` に以下のように設定します。
+
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "AZURE_TENANT_ID": "<テナントID>",
+    "AZURE_CLIENT_ID": "<クライアントID>",
+    "AZURE_CLIENT_SECRET": "<クライアントシークレット>"
+  }
+}
+```
+
+---
+
+これにより、Azure REST API を認証付きで呼び出す HTTP Trigger 関数を追加できます。
+
 ### デプロイ方法
 
 めっちゃ分かりづらいけど以下の手順通り  
