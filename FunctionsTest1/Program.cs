@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,18 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
+
+// DbContextのDI登録（接続文字列は環境変数やlocal.settings.jsonから取得）
+builder.Services.AddDbContext<FunctionsTest1.DAL.Contexts.TestDbContext>(options =>
+{
+    // local.settings.jsonのValuesまたは環境変数から接続文字列を取得
+    var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("接続文字列(DefaultConnection)が設定されていません。");
+    }
+    options.UseSqlServer(connectionString);
+});
 
 // 標準的なコンソールログ機能の設定
 // builder.Services.AddLogging(loggingBuilder =>

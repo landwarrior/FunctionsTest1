@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
-namespace FunctionsTest1
+namespace FunctionsTest1.Common
 {
 
     /// <summary>

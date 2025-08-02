@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using FunctionsTest1.Models;
 using System.Xml;
 using System.Globalization;
+using FunctionsTest1.Common;
 
 namespace FunctionsTest1;
 

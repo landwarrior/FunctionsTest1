@@ -16,6 +16,8 @@ public partial class TestDbContext : DbContext
     {
     }
 
+    public virtual DbSet<AzureService> AzureServices { get; set; }
+
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
@@ -26,15 +28,24 @@ public partial class TestDbContext : DbContext
 
     public virtual DbSet<VwUserOrder> VwUserOrders { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=192.168.33.150,1433;Database=TestDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;");
+    // 接続文字列はDbContextOptions経由で渡してください（OnConfiguringは不要です）
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AzureService>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AzureSer__3214EC07236AC900");
+
+            entity.Property(e => e.Id).HasMaxLength(200);
+            entity.Property(e => e.DisplayName).HasMaxLength(200);
+            entity.Property(e => e.Name).HasMaxLength(200);
+            entity.Property(e => e.ResourceType).HasMaxLength(600);
+            entity.Property(e => e.Type).HasMaxLength(200);
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Orders__3214EC07B1B418D6");
+            entity.HasKey(e => e.Id).HasName("PK__Orders__3214EC07F83D8FED");
 
             entity.HasIndex(e => e.OrderDate, "IX_Orders_OrderDate");
 
@@ -54,7 +65,7 @@ public partial class TestDbContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC0763DCBD57");
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC0795C2FFFE");
 
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
@@ -71,7 +82,7 @@ public partial class TestDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Products__3214EC071441056A");
+            entity.HasKey(e => e.Id).HasName("PK__Products__3214EC0792571453");
 
             entity.HasIndex(e => e.Name, "IX_Products_Name");
 
@@ -84,11 +95,11 @@ public partial class TestDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC070B576119");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07640998C8");
 
             entity.HasIndex(e => e.Email, "IX_Users_Email");
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534CA995AF4").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534FA7434B7").IsUnique();
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Email).HasMaxLength(255);
