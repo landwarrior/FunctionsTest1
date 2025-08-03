@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FunctionsTest1.DAL.Models;
+﻿using FunctionsTest1.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FunctionsTest1.DAL.Contexts;
