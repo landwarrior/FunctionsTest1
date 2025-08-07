@@ -15,7 +15,6 @@ builder.Services
 // DbContextのDI登録（接続文字列は環境変数やlocal.settings.jsonから取得）
 builder.Services.AddDbContext<FunctionsTest1.DAL.Contexts.TestDbContext>(options =>
 {
-    // local.settings.jsonのValuesまたは環境変数から接続文字列を取得
     var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
     if (string.IsNullOrEmpty(connectionString))
     {
@@ -23,6 +22,9 @@ builder.Services.AddDbContext<FunctionsTest1.DAL.Contexts.TestDbContext>(options
     }
     options.UseSqlServer(connectionString);
 });
+
+// DaoのDI登録
+builder.Services.AddScoped<FunctionsTest1.Daos.IAzureServiceDao, FunctionsTest1.Daos.AzureServiceDao>();
 
 // 標準的なコンソールログ機能の設定
 // builder.Services.AddLogging(loggingBuilder =>
