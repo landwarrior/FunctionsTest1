@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FunctionsTest1.DAL.Contexts;
 using FunctionsTest1.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FunctionsTest1.Daos
 {
@@ -15,18 +13,23 @@ namespace FunctionsTest1.Daos
         }
         public async Task<List<AzureService>> GetAllAsync()
         {
-            return _dbContext.AzureServices.ToList();
+            return await _dbContext.AzureServices.ToListAsync();
         }
-        public async Task<AzureService> GetByIdAsync(string id)
+        public async Task<AzureService?> GetByIdAsync(string id)
         {
-            return _dbContext.AzureServices.FirstOrDefault(e => e.Id == id);
+            return await _dbContext.AzureServices.FirstOrDefaultAsync(e => e.Id == id);
         }
         public async Task AddOrUpdateAsync(AzureService entity)
         {
-            var existing = _dbContext.AzureServices.FirstOrDefault(e => e.Id == entity.Id);
+            var existing = await _dbContext.AzureServices.FirstOrDefaultAsync(e => e.Id == entity.Id);
+            var now = DateTime.UtcNow;
             if (existing == null)
             {
-                _dbContext.AzureServices.Add(entity);
+                entity.CreatedAt = now;
+                entity.CreateUser = "Functions";
+                entity.UpdatedAt = now;
+                entity.UpdateUser = "Functions";
+                await _dbContext.AzureServices.AddAsync(entity);
             }
             else
             {
@@ -34,11 +37,13 @@ namespace FunctionsTest1.Daos
                 existing.Type = entity.Type;
                 existing.DisplayName = entity.DisplayName;
                 existing.ResourceType = entity.ResourceType;
+                existing.UpdatedAt = now;
+                existing.UpdateUser = "Functions";
             }
         }
         public async Task RemoveByIdsAsync(IEnumerable<string> ids)
         {
-            var removeEntities = _dbContext.AzureServices.Where(e => ids.Contains(e.Id)).ToList();
+            var removeEntities = await _dbContext.AzureServices.Where(e => ids.Contains(e.Id)).ToListAsync();
             _dbContext.AzureServices.RemoveRange(removeEntities);
         }
         public async Task SaveChangesAsync()

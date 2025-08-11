@@ -9,24 +9,17 @@ using Newtonsoft.Json;
 
 namespace FunctionsTest1.Services
 {
-    public class ServiceListService
-    {
-        private readonly IAzureServiceDao _azureServiceDao;
-        private readonly ILogger _logger;
 
-        public ServiceListService(IAzureServiceDao azureServiceDao, ILogger logger)
-        {
-            _azureServiceDao = azureServiceDao;
-            _logger = logger;
-        }
+    public class ServiceListService(IAzureServiceDao _azureServiceDao, ILogger _logger)
+    {
 
         public async Task SyncAzureServicesAsync(string tenantId, string clientId, string clientSecret)
         {
             var apiUrl = "https://management.azure.com/providers/Microsoft.Support/services?api-version=2024-04-01";
-            _logger.LogInformation($"Calling API: {apiUrl}");
+            _logger.Info($"Calling API: {apiUrl}");
 
             var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-            var tokenRequestContext = new TokenRequestContext(new[] { "https://management.azure.com/.default" });
+            var tokenRequestContext = new TokenRequestContext(["https://management.azure.com/.default"]);
             var accessToken = await credential.GetTokenAsync(tokenRequestContext);
 
             var apiRequest = new ApiRequestDto
@@ -38,7 +31,7 @@ namespace FunctionsTest1.Services
             var apiResponse = await ApiCommon.SendRequestAsync(apiRequest, _logger);
             if (!apiResponse.IsSuccess)
             {
-                _logger.LogError($"API call failed. Status: {apiResponse.StatusCode}");
+                _logger.Error($"API call failed. Status: {apiResponse.StatusCode}");
                 return;
             }
 
@@ -74,7 +67,7 @@ namespace FunctionsTest1.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"DB登録処理で例外: {ex.Message}");
+                _logger.Error($"DB登録処理で例外: {ex.Message}");
             }
         }
     }
