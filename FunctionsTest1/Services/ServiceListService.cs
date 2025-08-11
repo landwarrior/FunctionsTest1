@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Azure.Core;
 using Azure.Identity;
 using FunctionsTest1.Common;
@@ -10,6 +5,7 @@ using FunctionsTest1.Daos;
 using FunctionsTest1.DAL.Models;
 using FunctionsTest1.Dtos;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace FunctionsTest1.Services
 {
@@ -36,10 +32,10 @@ namespace FunctionsTest1.Services
             var apiRequest = new ApiRequestDto
             {
                 Url = apiUrl,
-                Method = System.Net.Http.HttpMethod.Get,
+                Method = HttpMethod.Get,
                 BearerToken = accessToken.Token
             };
-            var apiResponse = await ApiCommon.SendRequestAsync(apiRequest);
+            var apiResponse = await ApiCommon.SendRequestAsync(apiRequest, _logger);
             if (!apiResponse.IsSuccess)
             {
                 _logger.LogError($"API call failed. Status: {apiResponse.StatusCode}");
@@ -48,28 +44,22 @@ namespace FunctionsTest1.Services
 
             try
             {
-                var json = JsonDocument.Parse(apiResponse.Content);
-                if (json.RootElement.TryGetProperty("value", out var services))
+                // Newtonsoft.Json を使って DTO へデシリアライズ
+                var serviceList = JsonConvert.DeserializeObject<AzureServiceListDto>(apiResponse.Content!);
+                if (serviceList?.Value != null)
                 {
                     var apiIds = new HashSet<string>();
-                    foreach (var svc in services.EnumerateArray())
+                    foreach (var svc in serviceList.Value)
                     {
-                        var id = svc.GetProperty("id").GetString();
-                        if (string.IsNullOrEmpty(id)) continue;
-                        apiIds.Add(id);
-                        var name = svc.GetProperty("name").GetString();
-                        var type = svc.GetProperty("type").GetString();
-                        var displayName = svc.GetProperty("properties").TryGetProperty("displayName", out var dn) ? dn.GetString() : null;
-                        var resourceTypes = svc.GetProperty("properties").TryGetProperty("resourceTypes", out var rt) && rt.ValueKind == JsonValueKind.Array
-                            ? string.Join(",", rt.EnumerateArray().Select(x => x.GetString()))
-                            : null;
+                        if (string.IsNullOrEmpty(svc.Id)) continue;
+                        apiIds.Add(svc.Id);
                         var entity = new AzureService
                         {
-                            Id = id,
-                            Name = name ?? string.Empty,
-                            Type = type ?? string.Empty,
-                            DisplayName = displayName,
-                            ResourceType = resourceTypes
+                            Id = svc.Id,
+                            Name = svc.Name ?? string.Empty,
+                            Type = svc.Type ?? string.Empty,
+                            DisplayName = svc.Properties?.DisplayName,
+                            ResourceType = svc.Properties?.ResourceTypes != null ? string.Join(",", svc.Properties.ResourceTypes) : null
                         };
                         await _azureServiceDao.AddOrUpdateAsync(entity);
                     }

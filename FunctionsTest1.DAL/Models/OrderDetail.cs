@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FunctionsTest1.DAL.Models;
+﻿namespace FunctionsTest1.DAL.Models;
 
 public partial class OrderDetail
 {

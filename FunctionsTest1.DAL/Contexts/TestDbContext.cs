@@ -32,18 +32,30 @@ public partial class TestDbContext : DbContext
     {
         modelBuilder.Entity<AzureService>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AzureSer__3214EC07236AC900");
+            entity.HasKey(e => e.Id).HasName("PK__AzureSer__3214EC0775F162E0");
 
             entity.Property(e => e.Id).HasMaxLength(200);
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(200)
+                .HasColumnName("create_user");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("created_at");
             entity.Property(e => e.DisplayName).HasMaxLength(200);
             entity.Property(e => e.Name).HasMaxLength(200);
             entity.Property(e => e.ResourceType).HasMaxLength(600);
             entity.Property(e => e.Type).HasMaxLength(200);
+            entity.Property(e => e.UpdateUser)
+                .HasMaxLength(200)
+                .HasColumnName("update_user");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("updated_at");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Orders__3214EC07F83D8FED");
+            entity.HasKey(e => e.Id).HasName("PK__Orders__3214EC07A0B7AA71");
 
             entity.HasIndex(e => e.OrderDate, "IX_Orders_OrderDate");
 
@@ -63,7 +75,7 @@ public partial class TestDbContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC0795C2FFFE");
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC072A77BF3E");
 
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
@@ -80,7 +92,7 @@ public partial class TestDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Products__3214EC0792571453");
+            entity.HasKey(e => e.Id).HasName("PK__Products__3214EC073E09EECE");
 
             entity.HasIndex(e => e.Name, "IX_Products_Name");
 
@@ -93,11 +105,11 @@ public partial class TestDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07640998C8");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07AF42DF84");
 
             entity.HasIndex(e => e.Email, "IX_Users_Email");
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534FA7434B7").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534666F9900").IsUnique();
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Email).HasMaxLength(255);

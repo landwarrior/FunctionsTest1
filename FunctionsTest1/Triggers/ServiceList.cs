@@ -1,10 +1,6 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Azure.Core;
-using Azure.Identity;
-using FunctionsTest1.Common;
-using FunctionsTest1.DAL.Contexts;
 
 namespace FunctionsTest1.Triggers
 {

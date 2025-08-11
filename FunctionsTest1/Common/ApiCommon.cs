@@ -1,9 +1,6 @@
-using System.Net.Http;
-using System.Threading.Tasks;
-using System;
 using System.Net.Http.Headers;
-using System.Text.Json;
 using FunctionsTest1.Dtos;
+using Microsoft.Extensions.Logging;
 
 namespace FunctionsTest1.Common
 {
@@ -13,7 +10,7 @@ namespace FunctionsTest1.Common
         private const int MaxRetries = 3;
         private const int DelayMilliseconds = 1000;
 
-        public static async Task<ApiResponseDto> SendRequestAsync(ApiRequestDto requestDto)
+        public static async Task<ApiResponseDto> SendRequestAsync(ApiRequestDto requestDto, ILogger logger)
         {
             for (int attempt = 1; attempt <= MaxRetries; attempt++)
             {
@@ -37,12 +34,14 @@ namespace FunctionsTest1.Common
                         IsSuccess = response.IsSuccessStatusCode
                     };
                 }
-                catch (HttpRequestException ex) when (attempt < MaxRetries)
+                catch (HttpRequestException ex)
                 {
+                    logger.Warn($"API アクセスに失敗しました。例外: {ex.Message}");
                     await Task.Delay(DelayMilliseconds);
                 }
-                catch (TaskCanceledException) when (attempt < MaxRetries)
+                catch (Exception ex)
                 {
+                    logger.Error($"予期しないエラーが発生しました。例外: {ex.Message}");
                     await Task.Delay(DelayMilliseconds);
                 }
             }

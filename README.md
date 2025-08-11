@@ -37,8 +37,14 @@ VSCode の拡張機能に Azure Functions というまんまな名前のもの�
 
 NuGet パッケージを追加する。以下のコマンドを FunctionsTest1 フォルダに移動してから実行する。
 
-```console
+```bash
 dotnet add package HtmlAgilityPack
+```
+
+プロジェクトフォルダ直下でパッケージ追加する場合は以下のようにプロジェクトを指定すればいい。
+
+```bash
+dotnet add .\FunctionsTest1\FunctionsTest1.csproj package Newtonsoft.Json
 ```
 
 ### デプロイ方法
