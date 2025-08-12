@@ -6,12 +6,18 @@ namespace FunctionsTest1.Common
 {
     public class ApiCommon
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
         private const int MaxRetries = 3;
         private const int DelayMilliseconds = 1000;
 
+        /// <summary>
+        /// APIリクエストを送信し、レスポンスを取得します。
+        /// </summary>
+        /// <param name="requestDto"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
         public static async Task<ApiResponseDto> SendRequestAsync(ApiRequestDto requestDto, ILogger logger)
         {
+            HttpClient _httpClient = new();
             for (int attempt = 1; attempt <= MaxRetries; attempt++)
             {
                 try
