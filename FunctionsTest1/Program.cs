@@ -26,6 +26,12 @@ builder.Services.AddDbContext<FunctionsTest1.DAL.Contexts.TestDbContext>(options
 // DaoのDI登録
 builder.Services.AddScoped<FunctionsTest1.Daos.IAzureServiceDao, FunctionsTest1.Daos.AzureServiceDao>();
 
+// ServiceのDI登録
+builder.Services.AddScoped<FunctionsTest1.Services.ServiceListService>();
+
+// HttpClientFactoryのDI登録
+builder.Services.AddHttpClient();
+
 // 標準的なコンソールログ機能の設定
 // builder.Services.AddLogging(loggingBuilder =>
 // {

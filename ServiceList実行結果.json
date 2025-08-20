@@ -510,15 +510,6 @@
       }
     },
     {
-      "id": "/providers/Microsoft.Support/services/12a55468-fa60-8943-45e2-338011722931",
-      "name": "12a55468-fa60-8943-45e2-338011722931",
-      "type": "Microsoft.Support/services",
-      "properties": {
-        "displayName": "Azure Database for PostgreSQL single server",
-        "resourceTypes": ["MICROSOFT.DBFORPOSTGRESQL/SERVERS"]
-      }
-    },
-    {
       "id": "/providers/Microsoft.Support/services/b9c52334-7da1-7360-b396-0406b0c9d3b7",
       "name": "b9c52334-7da1-7360-b396-0406b0c9d3b7",
       "type": "Microsoft.Support/services",
@@ -1057,6 +1048,17 @@
       "properties": {
         "displayName": "Azure Stack Hub",
         "resourceTypes": ["Microsoft.AzureStack/registrations"]
+      }
+    },
+    {
+      "id": "/providers/Microsoft.Support/services/51ae87cd-eac0-46f6-def2-a9a2311a9b1e",
+      "name": "51ae87cd-eac0-46f6-def2-a9a2311a9b1e",
+      "type": "Microsoft.Support/services",
+      "properties": {
+        "displayName": "Azure Storage Discovery - Preview",
+        "resourceTypes": [
+          "microsoft.storagediscovery/storagediscoveryworkspaces"
+        ]
       }
     },
     {
@@ -1983,7 +1985,8 @@
         "resourceTypes": [
           "MICROSOFT.CLASSICSTORAGE/STORAGEACCOUNTS",
           "MICROSOFT.STORAGE/STORAGEACCOUNTS",
-          "MICROSOFT.STORAGESYNC/STORAGESYNCSERVICES"
+          "MICROSOFT.STORAGESYNC/STORAGESYNCSERVICES",
+          "Microsoft.FileShares/fileShares"
         ]
       }
     },
@@ -2645,15 +2648,6 @@
       }
     },
     {
-      "id": "/providers/Microsoft.Support/services/e76cbe81-8c12-1f2f-85c7-6064644116a4",
-      "name": "e76cbe81-8c12-1f2f-85c7-6064644116a4",
-      "type": "Microsoft.Support/services",
-      "properties": {
-        "displayName": "Microsoft Graph Authentication and Authorization (Entra ID)",
-        "resourceTypes": []
-      }
-    },
-    {
       "id": "/providers/Microsoft.Support/services/437e7d94-a4b3-68bd-a23a-087f528d47dd",
       "name": "437e7d94-a4b3-68bd-a23a-087f528d47dd",
       "type": "Microsoft.Support/services",
@@ -2748,12 +2742,6 @@
         "displayName": "Microsoft Sentinel",
         "resourceTypes": ["Microsoft.SecurityInsightsArg/Sentinel"]
       }
-    },
-    {
-      "id": "/providers/Microsoft.Support/services/901353dc-1f85-3649-cf76-c92822f5bc1d",
-      "name": "901353dc-1f85-3649-cf76-c92822f5bc1d",
-      "type": "Microsoft.Support/services",
-      "properties": { "displayName": "MongoDB Atlas", "resourceTypes": [] }
     },
     {
       "id": "/providers/Microsoft.Support/services/862cfc3c-3296-e210-caa9-716705ec3d34",
@@ -3459,6 +3447,15 @@
       "properties": {
         "displayName": "Windows Update for Business Reports",
         "resourceTypes": []
+      }
+    },
+    {
+      "id": "/providers/Microsoft.Support/services/058eeef6-ec4f-45ec-f290-a4e952b01dd2",
+      "name": "058eeef6-ec4f-45ec-f290-a4e952b01dd2",
+      "type": "Microsoft.Support/services",
+      "properties": {
+        "displayName": "workload orchestration",
+        "resourceTypes": ["Microsoft.edge"]
       }
     }
   ]

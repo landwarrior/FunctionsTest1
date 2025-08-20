@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace FunctionsTest1.Services
 {
 
-    public class ServiceListService(IAzureServiceDao _azureServiceDao, ILogger _logger)
+    public class ServiceListService(IAzureServiceDao _azureServiceDao, ILogger<ServiceListService> _logger, IHttpClientFactory _httpClientFactory)
     {
 
         public async Task SyncAzureServicesAsync(string tenantId, string clientId, string clientSecret)
@@ -28,7 +28,8 @@ namespace FunctionsTest1.Services
                 Method = HttpMethod.Get,
                 BearerToken = accessToken.Token
             };
-            var apiResponse = await ApiCommon.SendRequestAsync(apiRequest, _logger);
+            _logger.Info($"token: {accessToken.Token}");
+            var apiResponse = await ApiCommon.SendRequestAsync(apiRequest, _logger, _httpClientFactory);
             if (!apiResponse.IsSuccess)
             {
                 _logger.Error($"API call failed. Status: {apiResponse.StatusCode}");

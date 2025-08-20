@@ -14,10 +14,11 @@ namespace FunctionsTest1.Common
         /// </summary>
         /// <param name="requestDto"></param>
         /// <param name="logger"></param>
+        /// <param name="httpClientFactory"></param>
         /// <returns></returns>
-        public static async Task<ApiResponseDto> SendRequestAsync(ApiRequestDto requestDto, ILogger logger)
+        public static async Task<ApiResponseDto> SendRequestAsync(ApiRequestDto requestDto, ILogger logger, IHttpClientFactory httpClientFactory)
         {
-            HttpClient _httpClient = new();
+            using var httpClient = httpClientFactory.CreateClient();
             for (int attempt = 1; attempt <= MaxRetries; attempt++)
             {
                 try
@@ -31,7 +32,7 @@ namespace FunctionsTest1.Common
                     {
                         request.Content = requestDto.Content;
                     }
-                    var response = await _httpClient.SendAsync(request);
+                    var response = await httpClient.SendAsync(request);
                     var content = await response.Content.ReadAsStringAsync();
                     return new ApiResponseDto
                     {

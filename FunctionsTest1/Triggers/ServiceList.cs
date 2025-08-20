@@ -10,10 +10,10 @@ namespace FunctionsTest1.Triggers
         private readonly ILogger _logger;
         private readonly Services.ServiceListService _serviceListService;
 
-        public ServiceList(ILoggerFactory loggerFactory, Daos.IAzureServiceDao azureServiceDao)
+        public ServiceList(ILoggerFactory loggerFactory, Services.ServiceListService serviceListService)
         {
             _logger = loggerFactory.CreateLogger<ServiceList>();
-            _serviceListService = new Services.ServiceListService(azureServiceDao, _logger);
+            _serviceListService = serviceListService;
         }
 
         [Function("ServiceList")]
