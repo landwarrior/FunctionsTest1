@@ -193,20 +193,8 @@ dotnet add FunctionsTest1 package Azure.Identity
 
 ## 4. 環境変数の設定
 
-Azure Functions のローカル実行時は `local.settings.json` に以下のように設定します。
-
-```json
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "AZURE_TENANT_ID": "<テナントID>",
-    "AZURE_CLIENT_ID": "<クライアントID>",
-    "AZURE_CLIENT_SECRET": "<クライアントシークレット>"
-  }
-}
-```
+Azure Functions のローカル実行時は `sample.settings.json` をコピーして `local.settings.json` を作成し、内容は適宜変更してください。  
+なお、 DB 接続先は VM 上の Docker コンテナとして SQL Server を起動した場合の指定になっています。
 
 # Azure REST API を curl で実行する手順
 
@@ -229,7 +217,8 @@ curl -X POST https://login.microsoftonline.com/<TENANT_ID>/oauth2/v2.0/token ^
 - `<CLIENT_ID>`: アプリ登録のクライアントID
 - `<CLIENT_SECRET>`: アプリ登録のクライアントシークレット
 
-このコマンドのレスポンスで `access_token` を取得します。
+このコマンドのレスポンスで `access_token` を取得します。  
+scope の指定について、 Azure サービス名取得のための API では scope は上記である必要があるらしいので変更しなくていいようです。
 
 ## 2. API の実行
 
